@@ -21,16 +21,7 @@ def checkIfDraw(playingBox):
     return all(position == 'X' or position == 'O' for row in playingBox for position in row)
 
 
-def main():
-    playingBox = [
-              ['1', '2', '3'],
-              ['4', '5', '6'],
-              ['7', '8', '9']
-            ]
-    displayTheBoard(playingBox)
-
-    is_xTurn = True
-
+def getPlayerInput(is_xTurn):
     while True:
         print('----------------------------------------------------------------')
         val = input('Player ' + (' < X > ' if is_xTurn else ' < O > ') + 'Choose a number: ')
@@ -45,38 +36,60 @@ def main():
             print("Invalid input  Please enter a numbers only.")
             continue
 
+        return userInput
+
+
+def updatePlayingBox(playingBox, row, col, is_xTurn):
+    if (playingBox[row][col] == 'X') or (playingBox[row][col] == 'O'):
+        print("Cell already taken before. Choose another number.")
+        return False
+
+    if is_xTurn:
+        playingBox[row][col] = 'X'
+    else:
+        playingBox[row][col] = 'O'
+
+    return True
+
+
+def main():
+    playingBox = [
+              ['1', '2', '3'],
+              ['4', '5', '6'],
+              ['7', '8', '9']
+            ]
+    displayTheBoard(playingBox)
+
+    is_xTurn = True
+
+    while True:
+        userInput = getPlayerInput(is_xTurn)
+
         row = (userInput - 1) // 3
         col = (userInput - 1) % 3
 
-        if (playingBox[row][col] == 'X') or (playingBox[row][col] == 'O'):
-            print("Cell already taken befor . Choose another number.")
+        if not updatePlayingBox(playingBox, row, col, is_xTurn):
             continue
-
-## this for changing the displayed playingBox 
-        if is_xTurn:
-            playingBox[row][col] = 'X'
-        else:
-            playingBox[row][col] = 'O'
 
         displayTheBoard(playingBox)
 
         if checkIfUser_X_or_Y_winner(playingBox, 'X'):
-            print("\n\nCongratiolations Player X wins\n\n")
+            print("\n\nCongratulations Player X wins\n\n")
             break
         elif checkIfUser_X_or_Y_winner(playingBox, 'O'):
-            print("\n\nCongratiolations Player O wins\n\n")
+            print("\n\nCongratulations Player O wins\n\n")
             break
         elif checkIfDraw(playingBox):
             print("\n\nIt's a Tie\n\n")
             break
 
         is_xTurn = not is_xTurn
-main()
 
+main()
 while True:
-    chosse=input('\n\n\nPress "y" to continue OR "n" to exit \n\n\n')
-    if chosse=='y':    
+    choice = input('\n\n\nPress "y" to continue OR "n" to exit \n\n\n')
+    if choice.lower() == 'y':
         main()
     else:
-        print('see you soon :)')
+        print('See you soon :)')
         break
